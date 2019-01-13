@@ -11,11 +11,11 @@ import os
 import time
 # from model.residual_attention_network_pre import ResidualAttentionModel
 # based https://github.com/liudaizong/Residual-Attention-Network
-from .model.residual_attention_network import ResidualAttentionModel_92 as ResidualAttentionModel
+from model.residual_attention_network import ResidualAttentionModel_92 as ResidualAttentionModel
 
 model_file = 'attresnet92.pth'
 
-
+os.environ['CUDA_VISIBLE_DEVICES'] = '4,5,6,7'
 # for test
 def test(model, test_loader, btrain=False, model_file='model_92.pkl'):
     # Test
