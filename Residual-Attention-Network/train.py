@@ -8,7 +8,6 @@ import numpy as np
 import torchvision
 from torchvision import transforms, datasets, models
 import os
-import cv2
 import time
 # from model.residual_attention_network_pre import ResidualAttentionModel
 # based https://github.com/liudaizong/Residual-Attention-Network
