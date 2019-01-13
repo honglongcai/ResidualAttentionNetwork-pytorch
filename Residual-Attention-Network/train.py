@@ -12,9 +12,9 @@ import cv2
 import time
 # from model.residual_attention_network_pre import ResidualAttentionModel
 # based https://github.com/liudaizong/Residual-Attention-Network
-from model.residual_attention_network import ResidualAttentionModel_92_32input_update as ResidualAttentionModel
+from .model.residual_attention_network import ResidualAttentionModel_92 as ResidualAttentionModel
 
-model_file = 'model_92_sgd.pkl'
+model_file = 'attresnet92.pth'
 
 
 # for test
@@ -27,8 +27,8 @@ def test(model, test_loader, btrain=False, model_file='model_92.pkl'):
     correct = 0
     total = 0
     #
-    class_correct = list(0. for i in range(10))
-    class_total = list(0. for i in range(10))
+    class_correct = list(0. for i in range(100))
+    class_total = list(0. for i in range(100))
 
     for images, labels in test_loader:
         images = Variable(images.cuda())
@@ -46,36 +46,38 @@ def test(model, test_loader, btrain=False, model_file='model_92.pkl'):
 
     print('Accuracy of the model on the test images: %d %%' % (100 * float(correct) / total))
     print('Accuracy of the model on the test images:', float(correct)/total)
-    for i in range(10):
-        print('Accuracy of %5s : %2d %%' % (
-            classes[i], 100 * class_correct[i] / class_total[i]))
+    for i in range(100):
+        print('Accuracy of %d : %2d %%' % (
+            i, 100 * class_correct[i] / class_total[i]))
     return correct / total
 
 
 # Image Preprocessing
 transform = transforms.Compose([
+    transforms.Resize((128, 128), interpolation=3),
     transforms.RandomHorizontalFlip(),
-    transforms.RandomCrop((32, 32), padding=4),   #left, top, right, bottom
+    #transforms.RandomCrop((32, 32), padding=4),   #left, top, right, bottom
     # transforms.Scale(224),
     transforms.ToTensor()
 ])
 test_transform = transforms.Compose([
+    transforms.Resize((128, 128), interpolation=3),
     transforms.ToTensor()
 ])
 # when image is rgb, totensor do the division 255
 # CIFAR-10 Dataset
-train_dataset = datasets.CIFAR10(root='./data/',
+train_dataset = datasets.CIFAR100(root='./data/',
                                train=True,
                                transform=transform,
                                download=True)
 
-test_dataset = datasets.CIFAR10(root='./data/',
+test_dataset = datasets.CIFAR100(root='./data/',
                               train=False,
                               transform=test_transform)
 
 # Data Loader (Input Pipeline)
 train_loader = torch.utils.data.DataLoader(dataset=train_dataset,
-                                           batch_size=64, # 64
+                                           batch_size=32, # 64
                                            shuffle=True, num_workers=8)
 test_loader = torch.utils.data.DataLoader(dataset=test_dataset,
                                           batch_size=20,
@@ -84,7 +86,7 @@ test_loader = torch.utils.data.DataLoader(dataset=test_dataset,
 classes = ('plane', 'car', 'bird', 'cat',
            'deer', 'dog', 'frog', 'horse', 'ship', 'truck')
 model = ResidualAttentionModel().cuda()
-print(model)
+#print(model)
 
 lr = 0.1  # 0.1
 criterion = nn.CrossEntropyLoss()

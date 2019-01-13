@@ -181,7 +181,7 @@ class AttentionModule_stage0(nn.Module):
 
 class AttentionModule_stage1(nn.Module):
     # input size is 56*56
-    def __init__(self, in_channels, out_channels, size1=(56, 56), size2=(28, 28), size3=(14, 14)):
+    def __init__(self, in_channels, out_channels, size1=(32, 32), size2=(16, 16), size3=(8, 8)):
         super(AttentionModule_stage1, self).__init__()
         self.first_residual_blocks = ResidualBlock(in_channels, out_channels)
 
@@ -261,7 +261,7 @@ class AttentionModule_stage1(nn.Module):
 
 class AttentionModule_stage2(nn.Module):
     # input image size is 28*28
-    def __init__(self, in_channels, out_channels, size1=(28, 28), size2=(14, 14)):
+    def __init__(self, in_channels, out_channels, size1=(16, 16), size2=(8, 8)):
         super(AttentionModule_stage2, self).__init__()
         self.first_residual_blocks = ResidualBlock(in_channels, out_channels)
 
@@ -325,7 +325,7 @@ class AttentionModule_stage2(nn.Module):
 
 class AttentionModule_stage3(nn.Module):
     # input image size is 14*14
-    def __init__(self, in_channels, out_channels, size1=(14, 14)):
+    def __init__(self, in_channels, out_channels, size1=(8, 8)):
         super(AttentionModule_stage3, self).__init__()
         self.first_residual_blocks = ResidualBlock(in_channels, out_channels)
 
