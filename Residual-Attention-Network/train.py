@@ -4,18 +4,27 @@ import torch.nn as nn
 import torch.optim as optim
 from torch.autograd import Variable
 from torch.utils.data import Dataset, DataLoader
-import numpy as np
-import torchvision
 from torchvision import transforms, datasets, models
 import os
 import time
-# from model.residual_attention_network_pre import ResidualAttentionModel
-# based https://github.com/liudaizong/Residual-Attention-Network
+import argparse
 from model.residual_attention_network import ResidualAttentionModel_92 as ResidualAttentionModel
+
+
+parser = argparse.ArgumentParser(description='reid')
+
+parser.add_argument('--lr', type=float,
+                    default=0.1)
+parser.add_argument('--batchid', type=int,
+                    default=128)
+parser.add_argument('--gpuid', default='4,5,6,7')
+
+cfg = parser.parse_args()
+
 
 model_file = 'attresnet92.pth'
 
-os.environ['CUDA_VISIBLE_DEVICES'] = '4,5,6,7'
+os.environ['CUDA_VISIBLE_DEVICES'] = cfg.gpuid
 # for test
 def test(model, test_loader, btrain=False, model_file='model_92.pkl'):
     # Test
@@ -76,7 +85,7 @@ test_dataset = datasets.CIFAR100(root='./data/',
 
 # Data Loader (Input Pipeline)
 train_loader = torch.utils.data.DataLoader(dataset=train_dataset,
-                                           batch_size=32, # 64
+                                           batch_size=cfg.batchid, # 64
                                            shuffle=True, num_workers=8)
 test_loader = torch.utils.data.DataLoader(dataset=test_dataset,
                                           batch_size=20,
@@ -84,16 +93,18 @@ test_loader = torch.utils.data.DataLoader(dataset=test_dataset,
 
 classes = ('plane', 'car', 'bird', 'cat',
            'deer', 'dog', 'frog', 'horse', 'ship', 'truck')
-model = ResidualAttentionModel().cuda()
+model = ResidualAttentionModel()
+model = torch.nn.DataParallel(model)
+model = model.to('cuda')
 #print(model)
 
-lr = 0.1  # 0.1
+lr = cfg.lr  # 0.1
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.SGD(model.parameters(), lr=lr, momentum=0.9, nesterov=True, weight_decay=0.0001)
 is_train = True
 is_pretrain = False
 acc_best = 0
-total_epoch = 300
+total_epoch = 1000
 if is_train is True:
     if is_pretrain == True:
         model.load_state_dict((torch.load(model_file)))
