@@ -17,6 +17,8 @@ parser.add_argument('--lr', type=float,
                     default=0.1)
 parser.add_argument('--batchid', type=int,
                     default=128)
+parser.add_argument('--batchtest', type=int,
+                    default=128)
 parser.add_argument('--gpuid', default='4,5,6,7')
 
 cfg = parser.parse_args()
@@ -47,7 +49,7 @@ def test(model, test_loader, btrain=False, model_file='model_92.pkl'):
         correct += (predicted == labels.data).sum()
         #
         c = (predicted == labels.data).squeeze()
-        for i in range(20):
+        for i in range(cfg.batchtest):
             label = labels.data[i]
             class_correct[label] += c[i]
             class_total[label] += 1
@@ -88,7 +90,7 @@ train_loader = torch.utils.data.DataLoader(dataset=train_dataset,
                                            batch_size=cfg.batchid, # 64
                                            shuffle=True, num_workers=8)
 test_loader = torch.utils.data.DataLoader(dataset=test_dataset,
-                                          batch_size=20,
+                                          batch_size=cfg.batchtest,
                                           shuffle=False)
 
 classes = ('plane', 'car', 'bird', 'cat',
