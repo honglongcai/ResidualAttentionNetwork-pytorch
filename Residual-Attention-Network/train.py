@@ -8,7 +8,7 @@ from torchvision import transforms, datasets, models
 import os
 import time
 import argparse
-from model.residual_attention_network import ResidualAttentionModel_92 as ResidualAttentionModel
+from model.residual_attention_network import ResidualAttentionModel_56 as ResidualAttentionModel
 
 
 parser = argparse.ArgumentParser(description='reid')
@@ -24,7 +24,7 @@ parser.add_argument('--gpuid', default='4,5,6,7')
 cfg = parser.parse_args()
 
 
-model_file = 'attresnet92.pth'
+model_file = 'attresnet56.pth'
 
 os.environ['CUDA_VISIBLE_DEVICES'] = cfg.gpuid
 # for test
