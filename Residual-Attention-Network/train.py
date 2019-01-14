@@ -20,6 +20,7 @@ parser.add_argument('--batchid', type=int,
 parser.add_argument('--batchtest', type=int,
                     default=128)
 parser.add_argument('--gpuid', default='4,5,6,7')
+parser.add_argument('--epochs', type=int, default=200)
 
 cfg = parser.parse_args()
 
@@ -106,7 +107,7 @@ optimizer = optim.SGD(model.parameters(), lr=lr, momentum=0.9, nesterov=True, we
 is_train = True
 is_pretrain = False
 acc_best = 0
-total_epoch = 300
+total_epoch = cfg.epochs
 if is_train is True:
     if is_pretrain == True:
         model.load_state_dict((torch.load(model_file)))
