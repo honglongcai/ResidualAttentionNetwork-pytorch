@@ -48,7 +48,7 @@ def test(model, test_loader, btrain=False, model_file='model_92.pkl'):
         total += labels.size(0)
         correct += (predicted == labels.data).sum()
         #
-        c = (predicted == labels.data).squeeze()
+        c = (predicted == labels.data).type(torch.int32).squeeze()
         for i in range(cfg.batchtest):
             label = labels.data[i]
             class_correct[label] += c[i]
@@ -106,7 +106,7 @@ optimizer = optim.SGD(model.parameters(), lr=lr, momentum=0.9, nesterov=True, we
 is_train = True
 is_pretrain = False
 acc_best = 0
-total_epoch = 1000
+total_epoch = 300
 if is_train is True:
     if is_pretrain == True:
         model.load_state_dict((torch.load(model_file)))
@@ -129,6 +129,7 @@ if is_train is True:
             if (i+1) % 100 == 0:
                 print("Epoch [%d/%d], Iter [%d/%d] Loss: %.4f" %(epoch+1, total_epoch, i+1, len(train_loader), loss.data[0]))
         print('the epoch takes time:',time.time()-tims)
+        print('finish epoch:', epoch)
         print('evaluate test set:')
         acc = test(model, test_loader, btrain=True)
         if acc > acc_best:
@@ -136,8 +137,8 @@ if is_train is True:
             print('current best acc,', acc_best)
             torch.save(model.state_dict(), model_file)
         # Decaying Learning Rate
-        if (epoch+1) / float(total_epoch) == 0.3 or (epoch+1) / float(total_epoch) == 0.6 or (epoch+1) / float(total_epoch) == 0.9:
-            lr /= 10
+        if (epoch+1) / float(total_epoch) in [(i+1)/10. for i in range(9)]:
+            lr /= 2
             print('reset learning rate to:', lr)
             for param_group in optimizer.param_groups:
                 param_group['lr'] = lr
