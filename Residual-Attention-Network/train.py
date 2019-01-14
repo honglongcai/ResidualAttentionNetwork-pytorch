@@ -59,7 +59,7 @@ def test(model, test_loader, btrain=False, model_file='model_92.pkl'):
     for i in range(100):
         print('Accuracy of %d : %2d %%' % (
             i, 100 * class_correct[i] / class_total[i]))
-    return correct / total
+    return float(correct) / total
 
 
 # Image Preprocessing
