@@ -84,7 +84,7 @@ train_dataset = datasets.CIFAR100(root='./data/',
 test_dataset = datasets.CIFAR100(root='./data/',
                               train=False,
                               transform=test_transform)
-
+print(len(test_dataset))
 # Data Loader (Input Pipeline)
 train_loader = torch.utils.data.DataLoader(dataset=train_dataset,
                                            batch_size=cfg.batchid, # 64
